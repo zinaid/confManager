@@ -57,12 +57,32 @@
                         </div>
                     </form>
                     @else
-                    <form class="mt-4" method="GET" action="/submit">
-                        @csrf
-                        <x-button>
-                            {{ __('Submit paper') }}
-                        </x-button>
-                    </form>
+                        @if (Auth::user()->permission == 0)
+                            @if($paper_counter < 2)
+                            <form class="mt-4" method="GET" action="/submit">
+                                @csrf
+                                <x-button>
+                                    {{ __('Submit paper') }}
+                                </x-button>
+                            </form>
+                            @else
+                                You already have 2 submited papers. 
+                                <form class="mt-4" method="GET" action="/papers">
+                                    @csrf
+                                    <x-button>
+                                        {{ __('See papers') }}
+                                    </x-button>
+                                </form>
+                            @endif
+                        @else
+                            You are an admin in this software. Please advise to section General Settings to set conference details.
+                            <form class="mt-4" method="GET" action="/settings">
+                                @csrf
+                                <x-button>
+                                    {{ __('See settings') }}
+                                </x-button>
+                            </form>
+                        @endif
                     @endif
                 </div>
             </div>

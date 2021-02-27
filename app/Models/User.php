@@ -28,6 +28,7 @@ class User extends Authenticatable
         'email',
         'status',
         'permission',
+        'conference',
         'password',
     ];
 

@@ -15,10 +15,18 @@ class CreatePapersTable extends Migration
     {
         Schema::create('papers', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('title');
             $table->text('abstract');
-            $table->integer('author'); 
+            $table->text('keywords'); 
+            $table->integer('author');
+            $table->integer('type');
+            $table->integer('student');
+            $table->integer('conference');  
+            $table->integer('section');    
+            $table->integer('topic_area');
+            $table->text('file');
+            $table->dateTime('created_at'); 
+            $table->integer('status');  
         });
     }
 

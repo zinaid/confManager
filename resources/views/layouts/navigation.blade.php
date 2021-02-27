@@ -16,15 +16,44 @@
                         {{ __('Home') }}
                     </x-nav-link>
                     @if (Auth::user()->status != 0)
+                    @if (Auth::user()->permission == 0) 
                     <x-nav-link :href="route('submit')" :active="request()->routeIs('submit')">
                         {{ __('Submit') }}
                     </x-nav-link>
                     <x-nav-link :href="route('papers')" :active="request()->routeIs('papers')">
                         {{ __('Papers') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('profile')" :active="request()->routeIs('profile')">
-                        {{ __('Profile') }}
-                    </x-nav-link>
+                    @endif
+                    @if (Auth::user()->permission == 1)
+                    <!-- Settings Dropdown -->
+                    <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <x-dropdown width="48">
+                            <x-slot name="trigger">
+                                <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                                    <div>  {{ __('Settings') }}</div>
+
+                                    <div class="ml-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('settings')" :active="request()->routeIs('settings')">
+                                    {{ __('General settings') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('administration')" :active="request()->routeIs('administration')">
+                                    {{ __('Administration') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('mail_settings')" :active="request()->routeIs('mail_settings')">
+                                    {{ __('Mail settings') }}
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
+                    @endif
                     @endif
                 </div>
             </div>
@@ -45,6 +74,9 @@
                     </x-slot>
 
                     <x-slot name="content">
+                        <x-dropdown-link :href="route('profile')" :active="request()->routeIs('profile')">
+                            {{ __('Profile') }}
+                        </x-dropdown-link>
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

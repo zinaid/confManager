@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Paper extends Model
+class Author extends Model
 {
     use HasFactory;
 
@@ -15,17 +15,12 @@ class Paper extends Model
      * @var array
      */
     protected $fillable = [
-        'title',
-        'abstract',
-        'keywords',
-        'author',
-        'type',  
-        'student',
-        'conference',
-        'section',
-        'topic_area',
-        'file',
-        'created_at',
-        'status',
+        'name',
+        'lastname',
+        'affiliation',
+        'country',
+        'city',  
+        'paper_id',
+        'email',
     ];
 }

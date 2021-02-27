@@ -2,10 +2,9 @@
     <x-auth-card>
         <x-slot name="logo">
             <a href="/">
-                
+                <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
             </a>
         </x-slot>
-
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
@@ -28,10 +27,20 @@
 
             <!-- Title -->
             <div class="mt-4">
+            <x-label for="title" :value="__('Title')" />
+                <select id="title" class="block border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 w-full mt-1 bg-white rounded outline-none" name="title"  required autofocus>
+                    <option class="py-1">Prof.dr.</option>
+                    <option class="py-1">Dr.</option>
+                    <option class="py-1">Msc.</option>
+                    <option class="py-1">Bsc.</option>
+                </select>
+            </div>
+            <!-- Title -->
+            <!--<div class="mt-4">
                 <x-label for="title" :value="__('Title')" />
 
                 <x-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title')" required autofocus />
-            </div>
+            </div>-->
 
             <!-- Email Address -->
             <div class="mt-4">

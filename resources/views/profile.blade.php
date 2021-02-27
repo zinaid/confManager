@@ -7,6 +7,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <a href="{{ URL::previous() }}" class="btn btn-warning inline" align="left"> <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd"><path d="M2.117 12l7.527 6.235-.644.765-9-7.521 9-7.479.645.764-7.529 6.236h21.884v1h-21.883z"/></svg></i></a>
             <div class="bg-gray overflow-hidden shadow-sm sm:rounded-lg">
             @foreach ($users as $user)
                 <div class="p-6 bg-white border-b border-gray-200 mt-4">
@@ -29,9 +30,14 @@
 
                     <!-- Title -->
                     <div class="mt-4">
-                        <x-label for="title" :value="__('Title')" />
-
-                        <x-input id="title" class="block mt-1 w-full" type="text" name="title" value="{{$user->title}}" required autofocus />
+                    <x-label for="title" :value="__('Title')" />
+                        <select id="title" class="block border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 w-full mt-1 bg-white rounded outline-none" name="title"  required autofocus>
+                            <option <?php if($user->title=="Prof.dr.") echo "selected";?> class="py-1">Prof.dr.</option>
+                            <option <?php if($user->title=="Dr.") echo "selected";?> class="py-1">Dr.</option>
+                            <option <?php if($user->title=="Msc.") echo "selected";?> class="py-1">Msc.</option>
+                            <option <?php if($user->title=="Bsc.") echo "selected";?> class="py-1">Bsc.</option>
+                           
+                        </select>
                     </div>
 
                      <!-- Country -->

@@ -23,7 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('affiliation_country')->nullable();
             $table->string('affiliation_city')->nullable();
             $table->integer('status')->default(0);
-            $table->integer('permission')->default(0); 
+            $table->integer('permission')->default(0);
+            $table->integer('conference')->nullable();
             $table->string('title');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
