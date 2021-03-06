@@ -21,19 +21,25 @@
                 </div>
                 @endif
                 <x-auth-validation-errors class="mb-4" :errors="$errors" />
-                    <form method="POST" action="/paper_submission">
+                    <form method="POST" action="/paper_submission" enctype="multipart/form-data">
                         @csrf
 
                         <!-- Title -->
                         <div>
-                            <x-label for="title" :value="__('Title')" />
 
-                            <x-input id="title" class="block mt-1 w-full" type="text" name="title" :value="old('title')" required autofocus />
+                            <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" required autofocus />
+                        </div>
+
+                        <!-- Title -->
+                        <div>
+                            <x-label for="title" :value="__('Paper Title')" />
+
+                            <x-input id="title" class="block mt-1 w-full" type="text" name="title" placeholder="E.g. Rotation averaging algorithms" :value="old('title')" required autofocus />
                         </div>
 
                         <!-- Abstract -->
                         <div class="mt-4">
-                            <x-label for="abstract" :value="__('Abstract')" />
+                            <x-label for="abstract" :value="__('Paper Abstract')" />
 
                             <textarea class="block mt-1 w-full" name="abstract" value="old('abstract')" required></textarea>
                             <script>
@@ -51,41 +57,51 @@
 
                         <!-- Paper type -->
                         <div class="mt-4">
-                            <label class="block text-gray-600 font-light mb-2">Select Paper Type</label>
-                            <div class="flex">
+                        <x-label for="paper_type" :value="__('The paper is classified as')" />
+                            <div class="flex mt-1">
                                 <div class="flex items-center mb-2 mr-4">
-                                    <input type="radio" id="radio-paper-1" value="0" name="paper_type" class="h-4 w-4 text-gray-700 px-3 py-3 border rounded mr-2">
-                                    <label for="radio-paper-1" class="text-gray-600">Original Research</label>
+                                    <input type="radio" id="radio-paper-1" value="0" name="paper_type" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-paper-1" class="text-gray-600 text-sm">Original scientific paper</label>
+                                </div>
+                                <div class="flex items-center mb-2 mr-4">
+                                    <input type="radio" id="radio-paper-2" value="1" name="paper_type" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-paper-2" class="text-gray-600 text-sm">Preliminary notes</label>
+                                </div>
+                                <div class="flex items-center mb-2 mr-4">
+                                    <input type="radio" id="radio-paper-3" value="3" name="paper_type" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-paper-3" class="text-gray-600 text-sm">Subject review</label>
                                 </div>
                                 <div class="flex items-center mb-2">
-                                    <input type="radio" id="radio-paper-2" value="1" name="paper_type" class="h-4 w-4 text-gray-700 px-3 py-3 border rounded mr-2">
-                                    <label for="radio-paper-2" class="text-gray-600">Review Article</label>
+                                    <input type="radio" id="radio-paper-4" value="4" name="paper_type" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-paper-4" class="text-gray-600 text-sm	">Professional paper</label>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Paper student -->
+                        <!--
                         <div class="mt-4">
-                            <label class="block text-gray-600 font-light mb-2">Student paper</label>
-                            <div class="flex">
+                        <x-label for="paper_student" :value="__('Student paper')" />
+                            <div class="flex mt-1">
                                 <div class="flex items-center mb-2 mr-4">
-                                    <input type="radio" id="radio-student-1" value="1" name="paper_student" class="h-4 w-4 text-gray-700 px-3 py-3 border rounded mr-2">
-                                    <label for="radio-student-1" class="text-gray-600">Yes</label>
+                                    <input type="radio" id="radio-student-1" value="1" name="paper_student" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-student-1" class="text-gray-600 text-sm">Yes</label>
                                 </div>
                                 <div class="flex items-center mb-2">
-                                    <input type="radio" id="radio-student-2" value="0" name="paper_student" class="h-4 w-4 text-gray-700 px-3 py-3 border rounded mr-2">
-                                    <label for="radio-student-2" class="text-gray-600">No</label>
+                                    <input type="radio" id="radio-student-2" value="0" name="paper_student" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-student-2" class="text-gray-600 text-sm">No</label>
                                 </div>
                             </div>
                         </div>
+                        -->
 
                         <!-- Section -->
                         <div class="mt-4">
                         <x-label for="section" :value="__('Section')" />
                             <select id="section" name="section" class="block border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 w-full mt-1 bg-white rounded outline-none" name="section"  required autofocus>
-                            <option value="NULL" class="py-1">Choose an option</option>
+                            <option value="NULL" class="py-1 text-sm">Choose an option</option>
                                 @foreach($sections as $section)
-                                    <option value="{{$section->id}}" class="py-1">{{$section->name}}</option>
+                                    <option value="{{$section->id}}" class="py-1 text-sm">{{$section->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -103,7 +119,7 @@
                                         var $select = $('#topic');
                                         $select.find('option').remove();
                                         $.each(response, function(i, item) {
-                                            $select.append('<option value='+response[i].id+'>'+response[i].name+'</option>');
+                                            $select.append('<option class="text-sm" value='+response[i].id+'>'+response[i].name+'</option>');
                                         });
                                     }
                                 });
@@ -114,21 +130,21 @@
                         <div class="mt-4">
                         <x-label for="topic" :value="__('Research topic')" />
                             <select id="topic" name="topic" class="block border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 w-full mt-1 bg-white rounded outline-none" name="title"  required autofocus>
-                                <option value="NULL" class="py-1">Choose an option</option>
+                                <option value="NULL" class="py-1 text-sm">Choose an option</option>
                             </select>
                         </div>
 
                         <!-- Authors question -->
                         <div class="mt-4">
-                            <label class="block text-gray-600 font-light mb-2">Are there any more authors</label>
-                            <div class="flex">
+                            <x-label for="more_authors" :value="__('Are there any more authors')" />
+                            <div class="flex mt-1">
                                 <div class="flex items-center mb-2 mr-4">
-                                    <input type="radio" id="radio-authors-1" value="0" checked name="more_authors" class="h-4 w-4 text-gray-700 px-3 py-3 border rounded mr-2">
-                                    <label for="radio-authors-1" class="text-gray-600">No</label>
+                                    <input type="radio" id="radio-authors-1" value="0" checked name="more_authors" class="h-2 w-2 text-gray-700 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-authors-1" class="text-gray-600 text-sm">No</label>
                                 </div>
                                 <div class="flex items-center mb-2">
-                                    <input type="radio" id="radio-authors-2" value="1" name="more_authors" class="h-4 w-4 text-gray-700 px-3 py-3 border rounded mr-2">
-                                    <label for="radio-authors-2" class="text-gray-600">Yes</label>
+                                    <input type="radio" id="radio-authors-2" value="1" name="more_authors" class="h-2 w-2 text-gray-700 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-authors-2" class="text-gray-600 text-sm">Yes</label>
                                 </div>
                             </div>
                         </div>
@@ -158,7 +174,7 @@
                         <!-- Author number -->
                         <div class="mt-4 hidden" id="author-number-div">
                             <x-label for="author_number" :value="__('How many authors')" />
-                            <x-input id="author_number" class="block mt-1 w-full" type="number" name="author_number" :value="old('author_number')" autofocus />
+                            <x-input id="author_number" class="block mt-1 w-full text-sm" type="number" max="5" name="author_number" :value="old('author_number')" autofocus />
                         </div>
 
                         <script>
@@ -167,16 +183,21 @@
                                     var author_number = $("#author_number").val();
                                     $( "#div-for-authors" ).empty();
                                     var html;
-                                    for(var i=0;i<author_number;i++){
-                                        $("#div-for-authors").append('<div class="mt-4" id="author-number-div">'+
-                                        '<h4>Autor '+(i+1)+'</h4>'+
-                                        '<input id="author_name'+i+'" class="inline mr-1 mt-1 w-1/4" type="text" placeholder="Author name" name="author_name'+i+'" autofocus></input>'+
-                                        '<input id="author_lastname'+i+'" class="inline mr-1 mt-1 w-1/4" type="text" placeholder="Author lastname" name="author_lastname'+i+'" autofocus></input>'+
-                                        '<input id="author_email'+i+'" class="inline mr-1 mt-1 w-1/4" type="text" placeholder="Author email" name="author_email'+i+'" autofocus></input>'+
-                                        '<input id="author_affiliation'+i+'" class="inline mr-1 mt-1 w-1/4" type="text" placeholder="Author affiliation" name="author_affiliation'+i+'" autofocus></input>'+
-                                        '<input id="author_country'+i+'" class="inline mr-1 mt-1 w-1/4" type="text" placeholder="Author country" name="author_country'+i+'" autofocus></input>'+
-                                        '<input id="author_city'+i+'" class="inline mr-1 mt-1 w-1/4" type="text" placeholder="Author city" name="author_city'+i+'" autofocus></input>'+
-                                        '</div>');
+                                    if(author_number > 5){
+                                        alert("Maximum 6 authors (5 authors + corresponding author/submitter)");
+                                        $("#author_number").val("0");
+                                    }else{
+                                        for(var i=0;i<author_number;i++){
+                                            $("#div-for-authors").append('<div class="mt-4" id="author-number-div">'+
+                                            '<h4>Autor '+(i+1)+'</h4>'+
+                                            '<input id="author_name'+i+'" class="inline mr-1 mt-1 w-1/4 text-sm" type="text" placeholder="Author name" name="author_name'+i+'" autofocus></input>'+
+                                            '<input id="author_lastname'+i+'" class="inline mr-1 mt-1 w-1/4 text-sm" type="text" placeholder="Author lastname" name="author_lastname'+i+'" autofocus></input>'+
+                                            '<input id="author_email'+i+'" class="inline mr-1 mt-1 w-1/4 text-sm" type="text" placeholder="Author email" name="author_email'+i+'" autofocus></input>'+
+                                            '<input id="author_affiliation'+i+'" class="inline mr-1 mt-1 w-1/4 text-sm" type="text" placeholder="Author affiliation" name="author_affiliation'+i+'" autofocus></input>'+
+                                            '<input id="author_country'+i+'" class="inline mr-1 mt-1 w-1/4 text-sm" type="text" placeholder="Author country" name="author_country'+i+'" autofocus></input>'+
+                                            '<input id="author_city'+i+'" class="inline mr-1 mt-1 w-1/4 text-sm" type="text" placeholder="Author city" name="author_city'+i+'" autofocus></input>'+
+                                            '</div>');
+                                        }
                                     }
                                 })
                             }); 
@@ -184,7 +205,55 @@
 
                         <!-- Authors -->
                         <div class="mt-4" id="div-for-authors"></div>
+                        
+                        <!-- Full paper question -->
+                        <div class="mt-4">
+                            <x-label for="full_paper_question" :value="__('Do you want to submit full paper ?')" />
+                            <div class="flex mt-1">
+                                <div class="flex items-center mb-2 mr-4">
+                                    <input type="radio" id="radio-fullpaper-1" value="0" checked name="full_paper_question" class="h-2 w-2 text-gray-700 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-fullpaper-1" class="text-gray-600 text-sm">No</label>
+                                </div>
+                                <div class="flex items-center mb-2">
+                                    <input type="radio" id="radio-fullpaper-2" value="1" name="full_paper_question" class="h-2 w-2 text-gray-700 px-2 py-2 border rounded mr-2">
+                                    <label for="radio-fullpaper-2" class="text-gray-600 text-sm">Yes</label>
+                                </div>
+                            </div>
+                        </div>
 
+                        <script>
+                            $(document).ready(function() {
+                                $('#radio-fullpaper-2').click(function() {
+                                    if ($('#radio-fullpaper-2').is(':checked')) { 
+                                        $('.file_upload_div').addClass('block').removeClass('hidden'); 
+                                    }else{
+                                        alert("it's not checked YES");
+                                        $('.file_upload_div').addClass('hidden').removeClass('block'); 
+                                    }
+                                });
+
+                                $('#radio-fullpaper-1').click(function() {
+                                    if ($('#radio-fullpaper-1').is(':checked')) { 
+                                        $('.file_upload_div').addClass('hidden').removeClass('block'); 
+                                    }else{
+                                        $('.file_upload_div').addClass('block').removeClass('hidden'); 
+                                    }
+                                });
+
+                            }); 
+                        </script>
+
+                        <!-- File -->
+                        <div class="mt-4 hidden file_upload_div">
+                            <x-label for="paper_file" :value="__('File (.docx)')" />
+
+                            <x-input id="paper_file" class="block mt-1 w-full" type="file" name="paper_file" :value="old('paper_file')" autofocus />
+                        </div>
+
+                        <p class="text-sm mt-4 inline-flex items-center px-4 color-white py-2 bg-gray-300 border border-transparent rounded-md font-semibold">
+                            Clicking on submit you confirm that your paper is original and has not been previously presented in the submitted form at any conference or published in any scientific publications.
+                        </p>
+                        
                         <div class="flex items-center justify-end mt-4 mb-4">
                             <x-button class="ml-4">
                                 {{ __('Save') }}

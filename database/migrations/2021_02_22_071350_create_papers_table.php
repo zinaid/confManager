@@ -17,7 +17,8 @@ class CreatePapersTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('abstract');
-            $table->text('keywords'); 
+            $table->text('keywords');
+            $table->integer('paper_number');  
             $table->integer('author');
             $table->integer('type');
             $table->integer('student');
@@ -26,7 +27,8 @@ class CreatePapersTable extends Migration
             $table->integer('topic_area');
             $table->text('file');
             $table->dateTime('created_at'); 
-            $table->integer('status');  
+            $table->integer('status');
+            $table->text('paper_timestamp');   
         });
     }
 

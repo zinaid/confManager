@@ -22,12 +22,12 @@
                     <div class="p-6 bg-white border-b border-gray-200 mt-4">
                     @if($conference->status == 1)
                         <div class="border-l-4 border-gray-500 p-4" role="alert">
-                            <p class="font-bold">Active Conference | {{ $conference->name }}</p>
+                            <p class="font-bold">Active Conference | {{ $conference->acronym }}</p>
                             <p class="mt-4"> {{ $loop->iteration	 }}. {{ Str::limit($conference->name, 70, ' ...') }}</p>
                         </div>
                     @elseif($conference->status == 2)
                         <div class="border-l-4 border-red-500 p-4" role="alert">
-                            <p class="font-bold">Inactive Conference | {{ $conference->name }}</p>
+                            <p class="font-bold">Inactive Conference | {{ $conference->acronym }}</p>
                             <p class="mt-4"> {{ $loop->iteration	 }}. {{ Str::limit($conference->name, 70, ' ...') }}</p>
                         </div>
                     @endif

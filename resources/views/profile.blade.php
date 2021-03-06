@@ -56,25 +56,27 @@
 
                     <!-- Affiliation -->
                     <div class="mt-4">
-                        <x-label for="affiliation" :value="__('Affiliation')" />
+                        <x-label for="affiliation" :value="__('Affiliation/Company')" />
 
-                        <x-input id="affiliation" class="block mt-1 w-full" type="text" name="affiliation" value="{{$user->affiliation}}" required autofocus />
+                        <x-input id="affiliation" class="block mt-1 w-full" type="text" name="affiliation" value="{{$user->affiliation}}" placeholder="Faculty of Technical Engineering / Elektrovod D.O.O" required autofocus />
                     </div>
 
                     <!-- Affiliation Country -->
+                    <!--
                     <div class="mt-4">
                         <x-label for="affiliation_country" :value="__('Affiliation country')" />
 
-                        <x-input id="affiliation_country" class="block mt-1 w-full" type="text" name="affiliation_country" value="{{$user->affiliation_country}}" required />
+                        <x-input id="affiliation_country" class="block mt-1 w-full" type="text" name="affiliation_country" value="{{$user->affiliation_country}}" required autofocus />
                     </div>
-
+                    -->
                     <!-- Affiliation City -->
+                    <!--
                     <div class="mt-4">
                         <x-label for="affiliation_city" :value="__('Affiliation city')" />
 
-                        <x-input id="affiliation_city" class="block mt-1 w-full" type="text" name="affiliation_city" value="{{$user->affiliation_city}}" required />
+                        <x-input id="affiliation_city" class="block mt-1 w-full" type="text" name="affiliation_city" value="{{$user->affiliation_city}}" required autofocus />
                     </div>
-
+                    -->
 
                     <div class="flex items-center justify-end mt-4">
                         <x-button class="ml-4">

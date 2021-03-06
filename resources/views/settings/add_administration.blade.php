@@ -80,19 +80,21 @@
                         </div>
 
                         <!-- Affiliation Country -->
+                        <!--
                         <div class="mt-4">
                             <x-label for="affiliation_country" :value="__('Affiliation country')" />
 
-                            <x-input id="affiliation_country" class="block mt-1 w-full" type="text" name="affiliation_country" :value="old('affiliation_country')" required />
+                            <x-input id="affiliation_country" class="block mt-1 w-full" type="text" name="affiliation_country" :value="old('affiliation_country')" required autofocus/>
                         </div>
-
+                        -->
                         <!-- Affiliation City -->
+                        <!--
                         <div class="mt-4">
                             <x-label for="affiliation_city" :value="__('Affiliation city')" />
 
-                            <x-input id="affiliation_city" class="block mt-1 w-full" type="text" name="affiliation_city" :value="old('affiliation_city')" required />
+                            <x-input id="affiliation_city" class="block mt-1 w-full" type="text" name="affiliation_city" :value="old('affiliation_city')" required autofocus/>
                         </div>
-
+                        -->
 
                         <!-- Email Address -->
                         <div class="mt-4">

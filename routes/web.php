@@ -7,7 +7,7 @@ use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\SectionController;
 use App\Http\Controllers\TopicAreasController;
 use App\Http\Controllers\MailSettingsController;
-
+use App\Http\Controllers\PaperFileController;
 
 
 
@@ -34,8 +34,9 @@ Route::get('/dashboard', function () {
 
 Route::get('/submit', function () {
     $paper_counter = DB::table('papers')->where('author', Auth::id())->count();
-    $sections = DB::table('sections')->where('conference', 1)->get();
-    return view('submit', ['paper_counter' => $paper_counter, 'sections' => $sections]);
+    $conference = 1;
+    $sections = DB::table('sections')->where('conference', $conference)->get();
+    return view('submit', ['paper_counter' => $paper_counter, 'sections' => $sections, 'conference'=>$conference]);
 })->middleware(['auth'])->name('submit');
 
 # PROFILE ROUTES
@@ -51,6 +52,27 @@ Route::post('/paper_submission', [PaperController::class, 'store']);
 Route::get('papers', [PaperController::class, 'index'])->middleware('auth')->name('papers');
 
 Route::get('/papers/{id}', [PaperController::class, 'show'])->middleware('auth');
+
+Route::post('/paper_upload', [PaperController::class, 'paper_upload'])->middleware('auth')->name('paper_upload');
+
+Route::post('/add_paper_file_submit', [PaperController::class, 'add_paper_file']);
+
+Route::post('/assign_editor', [PaperController::class, 'assign_editor']);
+
+Route::post('/assign_editor_submit', [PaperController::class, 'assign_editor_submit']);
+
+Route::post('/assign_reviewer', [PaperController::class, 'assign_reviewer']);
+
+Route::post('/assign_reviewer_submit', [PaperController::class, 'assign_reviewer_submit']);
+
+Route::post('/review', [PaperController::class, 'review']);
+
+Route::post('/review_submission', [PaperController::class, 'review_submission']);
+
+Route::post('/editor_decision', [PaperController::class, 'editor_decision']);
+
+Route::post('/editor_decision_submit', [PaperController::class, 'editor_decision_submit']);
+
 
 # SETTINGS ROUTES
 Route::get('settings', [ConferenceController::class, 'index'])->middleware('auth')->name('settings');
@@ -83,5 +105,11 @@ Route::post('add_mail_settings_submit', [MailSettingsController::class, 'add_mai
 
 #AJAX REQUESTS
 Route::post('ajax/topics', [TopicAreasController::class, 'ajax_topics'])->name('ajax.topics');
+
+#DOWNLOAD PDF
+Route::post('download_pdf', [PaperFileController::class, 'download_pdf'])->middleware('auth')->name('download_pdf');
+
+#DATATABLE ROUTE
+Route::get('papers_list', [PaperController::class, 'getPapers'])->name('papers_list');
 
 require __DIR__.'/auth.php';

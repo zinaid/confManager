@@ -56,7 +56,7 @@ class MailSettingsController extends Controller
         ]);
         
         MailSettings::where([
-            ['conference', $request->type],
+            ['conference', $request->conference],
             ['type', $request->type]
         ])->delete();
 

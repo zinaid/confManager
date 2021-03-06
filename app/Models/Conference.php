@@ -17,6 +17,7 @@ class Conference extends Model
     
     protected $fillable = [
         'name',
+        'acronym',
         'user_id',
         'status',
         'start_date',

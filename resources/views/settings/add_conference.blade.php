@@ -24,6 +24,13 @@
                             <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
                         </div>
 
+                        <!-- Acronym -->
+                        <div class="mt-4">
+                            <x-label for="acronym" :value="__('Acronym')" />
+
+                            <x-input id="acronym" class="block mt-1 w-full" type="text" name="acronym" :value="old('acronym')" required autofocus />
+                        </div>
+
                         <!-- StartDate -->
                         <div class="mt-4">
                             <x-label for="start_date" :value="__('Start date')" />

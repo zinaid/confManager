@@ -9,6 +9,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Gmail;
 
 class RegisteredUserController extends Controller
 {
@@ -32,6 +34,10 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
+        $user_pass = $request->password;
+        $username = $request->email;
+
+
         $request->validate([
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
@@ -50,6 +56,28 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        $text_for_mail_formatted = "<p>Dear $request->title $request->name $request->lastname,</p>
+
+        <p>Thank you for your registration on ConfManager.</p>
+        
+        <p>Your account informations are:</p>
+        
+        <p><strong>username</strong>: $username</p>
+        
+        <p><strong>password</strong>: $user_pass</p>
+        
+        <p>Kindest regards,&nbsp;</p>
+        
+        <p>This is an automatically generated email &ndash; please do not reply to it.</p>
+        ";
+        
+        $details = [
+            'title'=>'Registration',
+            'body'=>''.$text_for_mail_formatted.'',
+        ];
+
+        Mail::to($request->email)->send(new Gmail($details));
+
         return redirect(RouteServiceProvider::HOME);
     }
 
@@ -59,8 +87,6 @@ class RegisteredUserController extends Controller
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'affiliation' => 'required|string|max:255',
-            'affiliation_country' => 'required|string|email|max:255|unique:users',
-            'affiliation_city' => 'required|string|confirmed|min:8',
         ]);
 
         Auth::login($user = User::update([

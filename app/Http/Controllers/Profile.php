@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\Gmail;
+use Illuminate\Support\Str;
 
 class Profile extends Controller
 {
@@ -39,8 +42,8 @@ class Profile extends Controller
         $profile->country = $request->country;
         $profile->city = $request->city;
         $profile->affiliation = $request->affiliation;
-        $profile->affiliation_country = $request->affiliation_country;
-        $profile->affiliation_city = $request->affiliation_city;
+        #$profile->affiliation_country = $request->affiliation_country;
+        #$profile->affiliation_city = $request->affiliation_city;
         $profile->status = 1;
 
         $profile->save();
@@ -56,8 +59,8 @@ class Profile extends Controller
         $profile->city = $request->city;
         $profile->title = $request->title;
         $profile->affiliation = $request->affiliation;
-        $profile->affiliation_country = $request->affiliation_country;
-        $profile->affiliation_city = $request->affiliation_city;
+        #$profile->affiliation_country = $request->affiliation_country;
+        #$profile->affiliation_city = $request->affiliation_city;
 
         $profile->save();
 
@@ -90,6 +93,8 @@ class Profile extends Controller
 
     public function add_administration_submit(Request $request)
     {
+        $user_pass = $request->password;
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
@@ -97,8 +102,6 @@ class Profile extends Controller
             'country' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'affiliation' => 'required|string|max:255',
-            'affiliation_country' => 'required|string|max:255',
-            'affiliation_city' => 'required|string|max:255',
             'conference' => 'required|integer',
             'permission' => 'required|integer',
             'email' => 'required|string|email|max:255|unique:users',
@@ -120,6 +123,42 @@ class Profile extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        // SEND MAIL TO ADMINISTRATION AFTER SUCCESSFUL REGISTRATION OF THEM
+        $email = $request->email;
+        $title_email = $request->title;
+        $name_email = $request->name;
+        $lastname_email =$request->lastname;
+        $conf_acronym_email = DB::table('conferences')->where('id', $request->conference)->select('acronym')->pluck('acronym')->first();
+        
+        if($request->permission == 2){
+            $administration_role = "Technical Secretar";
+        }elseif($request->permission == 3){
+            $administration_role = "Editor";
+        }elseif($request->permission == 4){
+            $administration_role = "Reviewer";
+        }
+
+       
+        $text_for_mail = DB::table('mail_settings')->where([
+            ['conference', $request->conference],
+            ['type', 8],
+            ])->select('text')->pluck('text')->first();
+
+        $text_for_mail_formatted = Str::replaceArray('$title', [$title_email], $text_for_mail);
+        $text_for_mail_formatted = Str::replaceArray('$name', [$name_email], $text_for_mail_formatted);
+        $text_for_mail_formatted = Str::replaceArray('$lastname', [$lastname_email], $text_for_mail_formatted);
+        $text_for_mail_formatted = Str::replaceArray('$conf_administration', [$administration_role], $text_for_mail_formatted);
+        $text_for_mail_formatted = Str::replaceArray('$username', [$request->email], $text_for_mail_formatted);
+        $text_for_mail_formatted = Str::replaceArray('$user_pass', [$user_pass], $text_for_mail_formatted);
+        $text_for_mail_formatted = Str::replaceArray('$conf_acronym', [$conf_acronym_email, $conf_acronym_email], $text_for_mail_formatted);
+        
+        $details = [
+            'title'=>'RIM 2021 - Registration',
+            'body'=>''.$text_for_mail_formatted.'',
+        ];
+
+        Mail::to($email)->send(new Gmail($details));
         
         return redirect()->route('administration');
 

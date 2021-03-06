@@ -45,6 +45,7 @@ class ConferenceController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:conferences',
+            'acronym' => 'required|string|max:255|unique:conferences',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
             'abstract_submission_date' => 'nullable|date',
@@ -56,6 +57,7 @@ class ConferenceController extends Controller
 
         $conference = Conference::create([
             'name' => $request->name,
+            'acronym' => $request->acronym,
             'user_id' => Auth::id(),
             'status' => 2,
             'start_date' => $request->start_date,

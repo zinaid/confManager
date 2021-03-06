@@ -23,8 +23,11 @@
                     <x-nav-link :href="route('papers')" :active="request()->routeIs('papers')">
                         {{ __('Papers') }}
                     </x-nav-link>
-                    @endif
-                    @if (Auth::user()->permission == 1)
+                    @else
+                    <x-nav-link :href="route('papers_list')" :active="request()->routeIs('papers_list')">
+                        {{ __('Papers') }}
+                    </x-nav-link>
+                    @if (Auth::user()->permission == 1 OR Auth::user()->permission == 2)
                     <!-- Settings Dropdown -->
                     <div class="hidden sm:flex sm:items-center sm:ml-6">
                         <x-dropdown width="48">
@@ -53,6 +56,7 @@
                             </x-slot>
                         </x-dropdown>
                     </div>
+                    @endif
                     @endif
                     @endif
                 </div>
