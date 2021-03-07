@@ -212,11 +212,19 @@ class PaperController extends Controller
         $name_email = DB::table('users')->where('id', $id)->select('name')->pluck('name')->first();
         $lastname_email = DB::table('users')->where('id', $id)->select('lastname')->pluck('lastname')->first();
         $conf_acronym_email = DB::table('conferences')->where('id', $conference_id)->select('acronym')->pluck('acronym')->first();
+        $conf_submit_date = DB::table('conferences')->where('id', $conference_id)->select('full_paper_date')->pluck('full_paper_date')->first();
 
-        $text_for_mail = DB::table('mail_settings')->where([
-            ['conference', $conference_id],
-            ['type', 1],
-            ])->select('text')->pluck('text')->first();
+        if($file_existance == 1){
+            $text_for_mail = DB::table('mail_settings')->where([
+                ['conference', $conference_id],
+                ['type', 1],
+                ])->select('text')->pluck('text')->first();
+        }else{
+            $text_for_mail = DB::table('mail_settings')->where([
+                ['conference', $conference_id],
+                ['type', 9],
+                ])->select('text')->pluck('text')->first();
+        }
 
         $text_for_mail_formatted = Str::replaceArray('$title', [$title_author_email], $text_for_mail);
         $text_for_mail_formatted = Str::replaceArray('$name', [$name_email], $text_for_mail_formatted);
@@ -224,6 +232,9 @@ class PaperController extends Controller
         $text_for_mail_formatted = Str::replaceArray('$paper_title', [$request->title], $text_for_mail_formatted);
         $text_for_mail_formatted = Str::replaceArray('$conf_acronym', [$conf_acronym_email, $conf_acronym_email, $conf_acronym_email], $text_for_mail_formatted);
         $text_for_mail_formatted = Str::replaceArray('$paper_number', [$paper_number], $text_for_mail_formatted);
+        if($file_existance == 0){
+            $text_for_mail_formatted = Str::replaceArray('$submit_date', [$conf_submit_date], $text_for_mail_formatted);
+        }
 
         $details = [
             'title'=>'RIM 2021 - Submission',
@@ -301,7 +312,12 @@ class PaperController extends Controller
         ->get();
 
         # Other acters in system see other files
-        if(Auth::user()->permission == 4){
+        if(Auth::user()->permission == 3){
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper)
+            ->whereIn('type', [2,3])
+            ->get();
+        }elseif(Auth::user()->permission == 4){
             $paper_files = DB::table('paper_files')
             ->where('paper_id', '=', $paper)
             ->whereIn('type', [2,3])
@@ -325,7 +341,27 @@ class PaperController extends Controller
     public function getPapers(Request $request)
     {
         if ($request->ajax()) {
-            $data = Paper::latest()->get();
+           
+            $id = $request->id;
+            $permission = Auth::user()->permission;
+
+            if($permission == 0){
+                $data = Paper::where('author', $id)->get();
+            }elseif($permission == 3){
+                $data = DB::table('papers')
+                ->join('editor_formulars', 'papers.id', '=', 'editor_formulars.paper_id')
+                ->where('editor_formulars.editor_id', '=', $id)
+                ->select('papers.*')
+                ->get();
+            }elseif($permission == 4){
+                $data = DB::table('papers')
+                ->join('reviewer_formulars', 'papers.id', '=', 'reviewer_formulars.paper_id')
+                ->where('reviewer_formulars.reviewer_id', '=', $id)
+                ->select('papers.*')
+                ->get();
+            }else{
+                $data = Paper::latest()->get();
+            }
 
             return Datatables::of($data)
                 ->addIndexColumn()
@@ -403,10 +439,12 @@ class PaperController extends Controller
     public function paper_upload(Request $request){
         $paper_id = $request->paper_id;
         $paper_number = $request->paper_number;
+        $paper_type = $request->paper_type;
 
         return view('paper_upload', [
             'paper_id' => $paper_id,
             'paper_number' => $paper_number,
+            'paper_type' => $paper_type,
         ]);
     }
 
@@ -425,7 +463,17 @@ class PaperController extends Controller
             $file = new Filesystem();
             $directory_subfolder_name = $request->paper_number;
             $directory = 'app/' . $directory_subfolder_name;
-            $filenameSave = ''.$paper_number.'_submit_without_meta';
+            if($request->type == 1){
+                $filenameSave = ''.$paper_number.'_submit';
+                $file->makeDirectory(storage_path($directory), 755, true, true);
+
+                $update_query = DB::table('papers')
+                ->where('id', $paper_id)
+                ->update(['file' => 1]);
+
+            }elseif($request->type == 2){
+                $filenameSave = ''.$paper_number.'_submit_without_meta';
+            }
 
             if ( $file->isDirectory(storage_path($directory)) )
             {
@@ -471,7 +519,12 @@ class PaperController extends Controller
         ->get();
 
         # Other acters in system see other files
-        if(Auth::user()->permission == 4){
+        if(Auth::user()->permission == 3){
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper_id)
+            ->whereIn('type', [2,3])
+            ->get();
+        }elseif(Auth::user()->permission == 4){
             $paper_files = DB::table('paper_files')
             ->where('paper_id', '=', $paper_id)
             ->whereIn('type', [2,3])
@@ -591,7 +644,12 @@ class PaperController extends Controller
         ->get();
 
         # Other acters in system see other files
-        if(Auth::user()->permission == 4){
+        if(Auth::user()->permission == 3){
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper_id)
+            ->whereIn('type', [2,3])
+            ->get();
+        }elseif(Auth::user()->permission == 4){
             $paper_files = DB::table('paper_files')
             ->where('paper_id', '=', $paper_id)
             ->whereIn('type', [2,3])
@@ -711,7 +769,12 @@ class PaperController extends Controller
         ->get();
 
         # Other acters in system see other files
-        if(Auth::user()->permission == 4){
+        if(Auth::user()->permission == 3){
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper_id)
+            ->whereIn('type', [2,3])
+            ->get();
+        }elseif(Auth::user()->permission == 4){
             $paper_files = DB::table('paper_files')
             ->where('paper_id', '=', $paper_id)
             ->whereIn('type', [2,3])
@@ -889,7 +952,12 @@ class PaperController extends Controller
         ->get();
 
         # Other acters in system see other files
-        if(Auth::user()->permission == 4){
+        if(Auth::user()->permission == 3){
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper_id)
+            ->whereIn('type', [2,3])
+            ->get();
+        }elseif(Auth::user()->permission == 4){
             $paper_files = DB::table('paper_files')
             ->where('paper_id', '=', $paper_id)
             ->whereIn('type', [2,3])
@@ -1052,7 +1120,12 @@ class PaperController extends Controller
         ->get();
 
         # Other acters in system see other files
-        if(Auth::user()->permission == 4){
+        if(Auth::user()->permission == 3){
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper_id)
+            ->whereIn('type', [2,3])
+            ->get();
+        }elseif(Auth::user()->permission == 4){
             $paper_files = DB::table('paper_files')
             ->where('paper_id', '=', $paper_id)
             ->whereIn('type', [2,3])

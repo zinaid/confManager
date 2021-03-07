@@ -19,6 +19,7 @@
                             $paper_status_global = $paper->status;
                             $paper_global_id = $paper->id;
                             $paper_global_number = $paper->paper_number;
+                            $paper_global_file = $paper->file;
                         ?>
                         <h2 class="font-bold text-xl text-gray-800 leading-tight">
                             {{ __('General info') }}
@@ -65,7 +66,7 @@
                                 <p>{{ $main_author->name }} {{ $main_author->lastname }}</p>
 
                                 <p class="mt-4 font-semibold">Corresponding authors affiliation:</p> 
-                                <p>{{ $main_author->affiliation }}, {{ $main_author->affiliation_country }}, {{ $main_author->affiliation_city }}</p>
+                                <p>{{ $main_author->affiliation }}</p>
 
                                 <p class="mt-4 font-semibold">Corresponding authors email:</p> 
                                 <p>{{ $main_author->email }}</p>
@@ -234,10 +235,23 @@
                     </div>
                     @endforeach
                     <div class="mt-4" align="right">
-                    @if (Auth::user()->permission == 2) 
+                    @if (Auth::user()->permission == 0) 
+                        @if ($paper_global_file == NULL)
+                        <form class="mt-2 mr-4 inline" method="POST" action="/paper_upload">
+                            @csrf
+                            <x-input id="paper_type" class="block mt-1 w-full" type="hidden" name="paper_type" value="1" autofocus />
+                            <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
+                            <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
+                            <x-button>
+                                {{ __('Upload full paper') }}
+                            </x-button>
+                        </form>
+                        @endif
+                    @elseif (Auth::user()->permission == 2) 
                     
                         <form class="mt-2 mr-4 inline" method="POST" action="/paper_upload">
                             @csrf
+                            <x-input id="paper_type" class="block mt-1 w-full" type="hidden" name="paper_type" value="2" autofocus />
                             <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
                             <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
                             <x-button>

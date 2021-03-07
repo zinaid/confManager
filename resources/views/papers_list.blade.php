@@ -1,3 +1,4 @@
+<?php use App\Models\User; ?>
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -48,14 +49,18 @@
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-
+<?php $id = Auth::user()->id;print_r($id);?>
 <script type="text/javascript">
   $(function () {
-    
     var table = $('.yajra-datatable').DataTable({
         processing: true,
         serverSide: true,
-        ajax: "{{ route('papers_list') }}",
+        "ajax": {
+            "url": "papers_list",
+            "data": {
+                "id": '<?php echo $id;?>'
+            }
+        },
         columns: [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
             {data: 'title', name: 'title'},

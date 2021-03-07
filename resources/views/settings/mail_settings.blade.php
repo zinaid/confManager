@@ -39,6 +39,37 @@
             @endif
             </div>
             <div class="p-6 bg-white border-b border-gray-200 mt-4">
+            <h4 class="mb-4">Mail for Submission without Full Paper</h4>
+            <?php $loop_count = 0;?>
+            @foreach ($mail_settings as $mail_setting)
+                @if($mail_setting->type == 9)
+                <?php $loop_count = $loop_count+1;?>
+                    <div class="border-l-4 border-gray-500 p-4" role="alert">
+                        <p class="mt-4">{!! $mail_setting->text !!}</p>
+                    </div>
+                @endif
+            @endforeach
+            @if($loop_count != 0)
+                <form class="mb-4" method="POST" action="/add_mail_settings" align="right">
+                        @csrf
+                        <x-input id="type" class="block mt-1 w-full" type="hidden" name="type" value="9" required />
+                        <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" required />
+                        <x-button class="bg-green-400">
+                            {{ __('Edit') }}
+                        </x-button>
+                </form>
+                @else
+                <form class="mb-4" method="POST" action="/add_mail_settings" align="right">
+                        @csrf
+                        <x-input id="type" class="block mt-1 w-full" type="hidden" name="type" value="9" required />
+                        <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" required />
+                        <x-button class="bg-green-400">
+                            {{ __('Add') }}
+                        </x-button>
+                </form>
+            @endif
+            </div>
+            <div class="p-6 bg-white border-b border-gray-200 mt-4">
             <h4 class="mb-4">Mail to secretar after submission</h4>
             <?php $loop_count = 0;?>
             @foreach ($mail_settings as $mail_setting)

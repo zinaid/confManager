@@ -16,7 +16,7 @@
                 <x-auth-validation-errors class="mb-4" :errors="$errors" />
                     <form method="POST" action="/add_paper_file_submit" enctype="multipart/form-data">
                         @csrf
-                        <x-input id="type" class="block mt-1 w-full" type="hidden" name="type" value="2" required autofocus />
+                        <x-input id="type" class="block mt-1 w-full" type="hidden" name="type" value="{{$paper_type}}" required autofocus />
                         <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_id}}" required autofocus />
                         <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_number}}" required autofocus />
 

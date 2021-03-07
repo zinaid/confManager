@@ -50,11 +50,11 @@
                                 </div>
                                 <div class="flex items-center mb-2 mr-4">
                                     <input type="radio" id="radio-paper-2" value="1" name="paper_type" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
-                                    <label for="radio-paper-2" class="text-gray-600 text-sm">Preliminary notes</label>
+                                    <label for="radio-paper-2" class="text-gray-600 text-sm">Preliminary communication</label>
                                 </div>
                                 <div class="flex items-center mb-2 mr-4">
                                     <input type="radio" id="radio-paper-3" value="3" name="paper_type" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
-                                    <label for="radio-paper-3" class="text-gray-600 text-sm">Subject review</label>
+                                    <label for="radio-paper-3" class="text-gray-600 text-sm">Review paper</label>
                                 </div>
                                 <div class="flex items-center mb-2">
                                     <input type="radio" id="radio-paper-4" value="4" name="paper_type" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
