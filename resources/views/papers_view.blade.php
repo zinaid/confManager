@@ -266,7 +266,7 @@
                                 </div>
                                 @endforeach
                             @endif
-                    @endforeach
+                        @endforeach
                     @else
                         @foreach($paper_files as $paper_file)
                         <div class="w-full py-6">
@@ -287,7 +287,7 @@
                     @endif
                     <div class="mt-4" align="right">
                     @if (Auth::user()->permission == 0) 
-                        @if ($paper_global_file == NULL)
+                        @if ($paper_global_file == 0)
                         <form class="mt-2 mr-4 inline" method="POST" action="/paper_upload">
                             @csrf
                             <x-input id="paper_type" class="block mt-1 w-full" type="hidden" name="paper_type" value="1" autofocus />
