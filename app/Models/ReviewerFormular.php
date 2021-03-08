@@ -34,6 +34,7 @@ class ReviewerFormular extends Model
         'paper_terminology',
         'paper_acceptance',
         'reviewer_comment',
+        'reviewer_comment_editor',
         'reviewer_file',
     ];
 }

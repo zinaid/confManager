@@ -351,6 +351,7 @@ class PaperController extends Controller
                 $data = DB::table('papers')
                 ->join('editor_formulars', 'papers.id', '=', 'editor_formulars.paper_id')
                 ->where('editor_formulars.editor_id', '=', $id)
+                ->groupBy('papers.id')
                 ->select('papers.*')
                 ->get();
             }elseif($permission == 4){
@@ -965,6 +966,7 @@ class PaperController extends Controller
         $ReviewerFormular->paper_supplementary_parts = $request->supplementary;
         $ReviewerFormular->paper_terminology = $request->terminology;
         $ReviewerFormular->reviewer_comment = $request->comment;
+        $ReviewerFormular->reviewer_comment_editor = $request->comment_editor;
 
         $ReviewerFormular->save();
 
@@ -1068,7 +1070,7 @@ class PaperController extends Controller
     {
         $id = Auth::id();
         $paper_id = $request->paper_id;
-        $paper_number = $request->paper_number;
+        $paper_number = $request->paper_number; 
         $server_addr = $request->ip();
         $editor_timestamp = "".date('Y-m-d H:i:s')." ".$server_addr."";
 
@@ -1184,6 +1186,13 @@ class PaperController extends Controller
             'date' => date("Y-m-d"),
             ]);
         
+        # close all open reviews for this paper and decline them
+        $update_query_reviewer_formulars = DB::table('reviewer_formulars')->where([
+            ['paper_id', $paper_id],
+            ['status', 0]
+        ])->update(['status' => 1, 'reviewer_acceptance' => 2]); 
+
+
         # return view paper/id with all necessery data
         $papers = DB::table('papers')
              ->where('id', '=', $paper_id)

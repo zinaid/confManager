@@ -174,11 +174,22 @@
                         </p>
 
                         <div class="mt-4">
-                            <x-label for="comment" :value="__('Reviewer\'s Comment')" />
+                            <x-label for="comment" :value="__('Reviewer\'s Comment for Author')" />
 
                             <textarea class="block mt-1 w-full" name="comment" value="old('comment')"></textarea>
                             <script>
                                 CKEDITOR.replace( 'comment' );
+                            </script>
+
+                            <!--<x-input id="abstract" class="block mt-1 w-full" type="text" name="abstract" :value="old('abstract')" required autofocus />-->
+                        </div>
+
+                        <div class="mt-4">
+                            <x-label for="comment_editor" :value="__('Reviewer\'s Comment for Editor')" />
+
+                            <textarea class="block mt-1 w-full" name="comment_editor" value="old('comment_editor')"></textarea>
+                            <script>
+                                CKEDITOR.replace( 'comment_editor' );
                             </script>
 
                             <!--<x-input id="abstract" class="block mt-1 w-full" type="text" name="abstract" :value="old('abstract')" required autofocus />-->

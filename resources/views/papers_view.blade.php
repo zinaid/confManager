@@ -152,7 +152,28 @@
                 </div>
             </div>
         </div>
-        @if (Auth::user()->permission == 1 OR Auth::user()->permission == 2)
+        @if(Auth::user()->permission == 0)
+        <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="p-6 bg-white border-b border-gray-200 mt-4">
+                <h2 class="mt-4 font-bold text-xl text-gray-800 leading-tight">
+                    {{ __('Reviews') }}
+                </h2>
+                <div class="border-l-4 border-gray-500 p-4 mt-4" role="alert">
+                    <?php
+                        $reviewers = DB::table('reviewer_formulars')->where('paper_id', '=', $paper_global_id)->get();
+                    ?>
+                    @foreach ($reviewers as $reviewer)
+                        <p class="mt-2">Reviewer {{ $loop->iteration }}.
+                        @if($reviewer->reviewer_acceptance == 1)
+                        <a href="/reviewer_response/{{$reviewer->id}}"><span class="px-1 py-1 bg-green-400 border border-transparent rounded-md font-semibold text-white text-xs">See response</span></a>
+                        @endif
+                        </p>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @elseif (Auth::user()->permission == 1 OR Auth::user()->permission == 2)
         <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="p-6 bg-white border-b border-gray-200 mt-4">
@@ -177,7 +198,7 @@
                         @if($reviewer->reviewer_acceptance == 1)
                         <a href="/reviewer_response/{{$reviewer->id}}"><span class="px-1 py-1 bg-green-400 border border-transparent rounded-md font-semibold text-white text-xs">Accepted ({{$reviewer->date_of_acceptance}})</span></a>
                         @elseif($reviewer->reviewer_acceptance == 2)
-                        <span class="px-1 py-1 bg-red-400 border border-transparent rounded-md font-semibold text-white text-xs">Decline ({{$reviewer->date_of_acceptance}})</span>
+                        <span class="px-1 py-1 bg-red-400 border border-transparent rounded-md font-semibold text-white text-xs">Decline</span>
                         @else
                         <span class="px-1 py-1 bg-blue-400 border border-transparent rounded-md font-semibold text-white text-xs">Waiting</span>
                         @endif
@@ -203,7 +224,7 @@
                         @if($reviewer->reviewer_acceptance == 1)
                         <a href="/reviewer_response/{{$reviewer->id}}"><span class="px-1 py-1 bg-green-400 border border-transparent rounded-md font-semibold text-white text-xs">Accepted ({{$reviewer->date_of_acceptance}})</span></a>
                         @elseif($reviewer->reviewer_acceptance == 2)
-                        <span class="px-1 py-1 bg-red-400 border border-transparent rounded-md font-semibold text-white text-xs">Decline ({{$reviewer->date_of_acceptance}})</span>
+                        <span class="px-1 py-1 bg-red-400 border border-transparent rounded-md font-semibold text-white text-xs">Decline</span>
                         @else
                         <span class="px-1 py-1 bg-blue-400 border border-transparent rounded-md font-semibold text-white text-xs">Waiting</span>
                         @endif
@@ -219,6 +240,7 @@
                 <h2 class="mt-4 font-bold text-xl text-gray-800 leading-tight">
                         {{ __('Paper logs') }}
                     </h2>
+                    @if (Auth::user()->permission == 4) 
                     <?php
                             $reviewer_finished = DB::table('reviewer_formulars')->where([
                                 ['paper_id', '=', $paper_global_id],
@@ -245,6 +267,24 @@
                                 @endforeach
                             @endif
                     @endforeach
+                    @else
+                        @foreach($paper_files as $paper_file)
+                        <div class="w-full py-6">
+                        <div class="flex">
+                            <div class="w-1/1">
+                            </div>
+                            <form class="mt-2" method="POST" action="/download_pdf">
+                                @csrf
+                                <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_file->paper_id}}" autofocus />
+                                <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_file->paper_number}}" autofocus />
+                                <x-input id="paper_file" class="block mt-1 w-full" type="hidden" name="paper_file" value="{{$paper_file->file}}" autofocus />
+                                <x-button>
+                                    <p>{{ $paper_file->file }}</p> - <p>{{ date('d.m.Y', strtotime($paper_file->date))}}</p>
+                                </x-button>
+                            </form> 
+                        </div>
+                        @endforeach 
+                    @endif
                     <div class="mt-4" align="right">
                     @if (Auth::user()->permission == 0) 
                         @if ($paper_global_file == NULL)
@@ -280,7 +320,7 @@
                                 {{ __('Upload paper for review') }}
                             </x-button>
                         </form>
-                        @if($paper_status_global == 1)
+                        @if($paper_status_global == 1 OR $paper_status_global == 4 OR $paper_status_global == 5)
                             <form class="mt-4 inline" method="POST" action="/assign_editor">
                                 @csrf
                                 <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />

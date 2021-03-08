@@ -130,7 +130,7 @@
                         </div>
                         @if($reviewer_formular->reviewer_comment != NULL)
                         <div class="mt-4 mb-4">
-                            <x-label for="comment" :value="__('Reviewer\'s Comment')" />
+                            <x-label for="comment" :value="__('Reviewer\'s Comment for Author')" />
 
                             <textarea class="block mt-1 w-full" name="comment" value="old('comment')">{{ $reviewer_formular->reviewer_comment }}</textarea>
                             <script>
@@ -140,6 +140,21 @@
                             <!--<x-input id="abstract" class="block mt-1 w-full" type="text" name="abstract" :value="old('abstract')" required autofocus />-->
                         </div>
                         @endif
+                        @if(Auth::user()->permission == 1 OR Auth::user()->permission == 2 OR Auth::user()->permission == 3)
+                            @if($reviewer_formular->reviewer_comment_editor != NULL)
+                            <div class="mt-4 mb-4">
+                                <x-label for="comment_editor" :value="__('Reviewer\'s Comment for Editor')" />
+
+                                <textarea class="block mt-1 w-full" name="comment_editor" value="old('comment_editor')">{{ $reviewer_formular->reviewer_comment_editor }}</textarea>
+                                <script>
+                                    CKEDITOR.replace( 'comment_editor' );
+                                </script>
+
+                                <!--<x-input id="abstract" class="block mt-1 w-full" type="text" name="abstract" :value="old('abstract')" required autofocus />-->
+                            </div>
+                            @endif
+                        @endif
+
                         @endforeach
                     </form>
             </div>

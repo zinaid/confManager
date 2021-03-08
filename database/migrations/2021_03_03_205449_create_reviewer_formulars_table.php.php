@@ -33,6 +33,7 @@ class CreateReviewerFormularsTable extends Migration
             $table->integer('paper_terminology')->nullable();
             $table->integer('paper_acceptance')->nullable();
             $table->text('reviewer_comment')->nullable();
+            $table->text('reviewer_comment_editor')->nullable();
             $table->text('reviewer_file')->nullable();
         });
     }
