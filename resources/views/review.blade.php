@@ -147,19 +147,19 @@
                         <x-label for="decision" :value="__('Decision for this paper ?')" />
                             <div class="flex mt-1">
                                 <div class="flex items-center mb-2 mr-4">
-                                    <input type="radio" id="radio-decision-1" value="0" name="decision" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <input type="radio" id="radio-decision-1" value="7" name="decision" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
                                     <label for="radio-decision-1" class="text-gray-600 text-sm">Reject</label>
                                 </div>
                                 <div class="flex items-center mb-2 mr-4">
-                                    <input type="radio" id="radio-decision-2" value="1" name="decision" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <input type="radio" id="radio-decision-2" value="6" name="decision" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
                                     <label for="radio-decision-2" class="text-gray-600 text-sm">Accept</label>
                                 </div>
                                 <div class="flex items-center mb-2 mr-4">
-                                    <input type="radio" id="radio-decision-3" value="2" name="decision" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <input type="radio" id="radio-decision-3" value="5" name="decision" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
                                     <label for="radio-decision-3" class="text-gray-600 text-sm">Accept with Major Revision</label>
                                 </div>
                                 <div class="flex items-center mb-2 mr-4">
-                                    <input type="radio" id="radio-decision-" value="3" name="decision" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
+                                    <input type="radio" id="radio-decision-" value="4" name="decision" class="h-2 w-2 text-gray-600 px-2 py-2 border rounded mr-2">
                                     <label for="radio-decision-4" class="text-gray-600 text-sm">Accept with Minor Revision</label>
                                 </div>
                             </div>
@@ -176,7 +176,7 @@
                         <div class="mt-4">
                             <x-label for="comment" :value="__('Reviewer\'s Comment')" />
 
-                            <textarea class="block mt-1 w-full" name="comment" value="old('comment')" required></textarea>
+                            <textarea class="block mt-1 w-full" name="comment" value="old('comment')"></textarea>
                             <script>
                                 CKEDITOR.replace( 'comment' );
                             </script>

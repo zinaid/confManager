@@ -358,6 +358,7 @@ class PaperController extends Controller
                 ->join('reviewer_formulars', 'papers.id', '=', 'reviewer_formulars.paper_id')
                 ->where('reviewer_formulars.reviewer_id', '=', $id)
                 ->select('papers.*')
+                ->groupBy('papers.id')
                 ->get();
             }else{
                 $data = Paper::latest()->get();
@@ -381,9 +382,9 @@ class PaperController extends Controller
                     }elseif($row->status == 5){
                         $status_text = "<p class='inline-flex items-center px-4 py-2 bg-red-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'>Major Revision</p>";
                     }elseif($row->status == 6){
-                        $status_text = "<p class='inline-flex items-center px-4 py-2 bg-red-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'>Rejected</p>";
-                    }elseif($row->status == 7){
                         $status_text = "<p class='inline-flex items-center px-4 py-2 bg-green-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'>Accepted</p>";
+                    }elseif($row->status == 7){
+                        $status_text = "<p class='inline-flex items-center px-4 py-2 bg-red-400 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150'>Rejected</p>";
                     }
                     return $status_text;
                 })
@@ -473,6 +474,8 @@ class PaperController extends Controller
 
             }elseif($request->type == 2){
                 $filenameSave = ''.$paper_number.'_submit_without_meta';
+            }elseif($request->type ==4){
+                $filenameSave = ''.$paper_number.'_final_paper';
             }
 
             if ( $file->isDirectory(storage_path($directory)) )
@@ -682,6 +685,16 @@ class PaperController extends Controller
         ]);
     }
 
+    public function reviewer_response(Request $request){
+        $reviewer_formular_id = $request->id;
+
+        $reviewer_formulars = DB::table('reviewer_formulars')->where('id', '=', $reviewer_formular_id)->get();
+
+        return view('reviewer_response', [
+            'reviewer_formulars' => $reviewer_formulars,
+        ]);
+    }
+
     public function assign_reviewer_submit(Request $request){
 
         $id = Auth::id();
@@ -739,6 +752,7 @@ class PaperController extends Controller
         $update_query = DB::table('papers')
               ->where('id', $paper_id)
               ->update(['status' => 3]);
+        
 
         # add paper logs
 
@@ -749,6 +763,64 @@ class PaperController extends Controller
             'date' => date("Y-m-d"),
             ]);
         }
+        # return view paper/id with all necessery data
+        $papers = DB::table('papers')
+             ->where('id', '=', $paper_id)
+             ->get();
+
+        $author_id = DB::table('papers')->where('id', '=', $paper_id)->value('author');
+
+        $main_author_info = DB::table('users')
+        ->where('id', '=', $author_id)
+        ->get();
+
+        $other_author_info = DB::table('authors')
+        ->where('paper_id', '=', $paper_id)
+        ->get();
+
+        $logs_info = DB::table('paper_logs')
+        ->where('paper_id', '=', $paper_id)
+        ->get();
+
+        # Other acters in system see other files
+        if(Auth::user()->permission == 3){
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper_id)
+            ->whereIn('type', [2,3])
+            ->get();
+        }elseif(Auth::user()->permission == 4){
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper_id)
+            ->whereIn('type', [2,3])
+            ->get();
+        }else{
+            $paper_files = DB::table('paper_files')
+            ->where('paper_id', '=', $paper_id)
+            ->get();
+        }
+
+        return redirect('/papers/'.$paper_id.'')->with([
+            'papers' => $papers,
+            'main_authors' => $main_author_info,
+            'other_authors' => $other_author_info,
+            'logs_info' => $logs_info,
+            'paper_files' => $paper_files,
+        ]);
+    }
+
+    public function accept_review(Request $request){
+
+        $review_formular_id = $request->review_formular_id;
+        $paper_id = $request->paper_id;
+
+        # accept_review
+        $update_query = DB::table('reviewer_formulars')
+              ->where('id', $review_formular_id)
+              ->update([
+                  'reviewer_acceptance' => 1,
+                  'date_of_acceptance' => date("Y-m-d"),
+                  ]);
+
         # return view paper/id with all necessery data
         $papers = DB::table('papers')
              ->where('id', '=', $paper_id)
@@ -827,7 +899,6 @@ class PaperController extends Controller
             'supplementary' => 'required|integer',
             'terminology' => 'required|integer',
             'decision' => 'required|integer',
-            'comment' => 'string',
             'file_question' => 'required|integer',
             'review_file' => 'mimes:doc,docx,pdf|max:2500000'
         ]);
@@ -1060,7 +1131,7 @@ class PaperController extends Controller
             'body'=>''.$text_for_mail_secretar_formatted.'',
         ];
 
-        #Mail::to($secretar_email)->send(new Gmail($details));
+        Mail::to($secretar_email)->send(new Gmail($details));
 
         // SEND MAIL TO AUTOR AFTER EDITOR DECISION
 
@@ -1099,6 +1170,19 @@ class PaperController extends Controller
         ];
 
         Mail::to($author_email)->send(new Gmail($details));
+
+        $update_query = DB::table('papers')
+                ->where('id', $paper_id)
+                ->update(['status' => $request->decision]);
+        
+        # add paper logs
+
+        DB::table('paper_logs')->insert([
+            'paper_id' => $paper_id,
+            'user_id' => $id,
+            'status' => $request->decision,
+            'date' => date("Y-m-d"),
+            ]);
         
         # return view paper/id with all necessery data
         $papers = DB::table('papers')

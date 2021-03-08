@@ -50,16 +50,16 @@
                         @endif
                     </div>
                 @elseif($paper->status == 6)
-                <div class="border-l-4 border-red-500 p-4" role="alert">
-                    <p class="font-bold">Rejected | Paper is Rejected.</p>
+                <div class="border-l-4 border-green-500 p-4" role="alert">
+                    <p class="font-bold">Accepted | Paper is Rejected.</p>
                     <p class="mt-4"> {{ $loop->iteration	 }}. {{ Str::limit($paper->title, 70, ' ...') }} {{ date('d.m.Y', strtotime($paper->created_at)) }}</p>
                     @if ($paper->file == 1) <p class="mt-4">Full paper is uploaded</p>
                     @else <p class="mt-4">{Full paper is not uploaded</p>
                     @endif
                 </div>
-                @elseif($paper->status == 6)
-                <div class="border-l-4 border-green-500 p-4" role="alert">
-                    <p class="font-bold">Accepted | Paper is Accepted.</p>
+                @elseif($paper->status == 7)
+                <div class="border-l-4 border-red-500 p-4" role="alert">
+                    <p class="font-bold">Rejected | Paper is Rejected.</p>
                     <p class="mt-4"> {{ $loop->iteration	 }}. {{ Str::limit($paper->title, 70, ' ...') }} {{ date('d.m.Y', strtotime($paper->created_at)) }}</p>
                     @if ($paper->file == 1) <p class="mt-4">Full paper is uploaded</p>
                     @else <p class="mt-4">{Full paper is not uploaded</p>

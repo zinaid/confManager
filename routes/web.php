@@ -65,6 +65,8 @@ Route::post('/assign_reviewer', [PaperController::class, 'assign_reviewer']);
 
 Route::post('/assign_reviewer_submit', [PaperController::class, 'assign_reviewer_submit']);
 
+Route::post('/accept_review', [PaperController::class, 'accept_review']);
+
 Route::post('/review', [PaperController::class, 'review']);
 
 Route::post('/review_submission', [PaperController::class, 'review_submission']);
@@ -72,6 +74,8 @@ Route::post('/review_submission', [PaperController::class, 'review_submission'])
 Route::post('/editor_decision', [PaperController::class, 'editor_decision']);
 
 Route::post('/editor_decision_submit', [PaperController::class, 'editor_decision_submit']);
+
+Route::get('/reviewer_response/{id}', [PaperController::class, 'reviewer_response']);
 
 
 # SETTINGS ROUTES

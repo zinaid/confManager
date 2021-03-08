@@ -24,8 +24,8 @@
                         <x-label for="decision" :value="__('This paper is ?')" />
                             <select id="decision" name="decision" class="block border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 w-full mt-1 bg-white rounded outline-none" name="section"  required autofocus>
                             <option value="NULL" class="py-1 text-sm">Choose an option</option>
-                            <option value="6" class="py-1 text-sm">Rejected</option>
-                            <option value="7" class="py-1 text-sm">Accepted</option>
+                            <option value="7" class="py-1 text-sm">Rejected</option>
+                            <option value="6" class="py-1 text-sm">Accepted</option>
                                 <option value="5" class="py-1 text-sm">Accepted with Minor Revision</option>
                                 <option value="4" class="py-1 text-sm">Accepted with Major Revision</option>
                             </select>

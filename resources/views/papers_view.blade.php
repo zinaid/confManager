@@ -174,7 +174,7 @@
                     @foreach ($reviewers as $reviewer)
                         <p class="mt-2">{{ $loop->iteration }}. {{User::find($reviewer->reviewer_id)->name}} {{User::find($reviewer->reviewer_id)->lastname}} 
                         @if($reviewer->reviewer_acceptance == 1)
-                        <span class="px-1 py-1 bg-green-400 border border-transparent rounded-md font-semibold text-white text-xs">Accepted ({{$reviewer->date_of_acceptance}})</span>
+                        <a href="/reviewer_response/{{$reviewer->id}}"><span class="px-1 py-1 bg-green-400 border border-transparent rounded-md font-semibold text-white text-xs">Accepted ({{$reviewer->date_of_acceptance}})</span></a>
                         @elseif($reviewer->reviewer_acceptance == 2)
                         <span class="px-1 py-1 bg-red-400 border border-transparent rounded-md font-semibold text-white text-xs">Decline ({{$reviewer->date_of_acceptance}})</span>
                         @else
@@ -247,6 +247,17 @@
                             </x-button>
                         </form>
                         @endif
+                        @if ($paper_status_global == 6)
+                        <form class="mt-2 mr-4 inline" method="POST" action="/paper_upload">
+                            @csrf
+                            <x-input id="paper_type" class="block mt-1 w-full" type="hidden" name="paper_type" value="4" autofocus />
+                            <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
+                            <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
+                            <x-button>
+                                {{ __('Upload final paper') }}
+                            </x-button>
+                        </form>
+                        @endif
                     @elseif (Auth::user()->permission == 2) 
                     
                         <form class="mt-2 mr-4 inline" method="POST" action="/paper_upload">
@@ -271,42 +282,65 @@
                         @endif
                     
                     @elseif(Auth::user()->permission == 3)
-                        <form class="mt-2 inline" method="POST" action="/assign_reviewer">
-                            @csrf
-                            <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
-                            <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
-                            <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" autofocus />
-                            <x-button>
-                                {{ __('Assign to Reviewer') }}
-                            </x-button>
-                        </form>
-                        <form class="mt-2 inline" method="POST" action="/editor_decision">
-                            @csrf
-                            <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
-                            <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
-                            <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" autofocus />
-                            <x-button>
-                                {{ __('Make a decision') }}
-                            </x-button>
-                        </form>
+                        <?php
+                            $editor_finished = DB::table('editor_formulars')->where([
+                                ['paper_id', '=', $paper_global_id],
+                                ['editor_id', '=', Auth::user()->id],
+                                ])->get();
+                        ?>
+                        @foreach($editor_finished as $ed_finished)
+                            @if($ed_finished->status != 1)
+                            <form class="mt-2 inline" method="POST" action="/assign_reviewer">
+                                @csrf
+                                <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
+                                <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
+                                <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" autofocus />
+                                <x-button>
+                                    {{ __('Assign to Reviewer') }}
+                                </x-button>
+                            </form>
+                            <form class="mt-2 inline" method="POST" action="/editor_decision">
+                                @csrf
+                                <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
+                                <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
+                                <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" autofocus />
+                                <x-button>
+                                    {{ __('Make a decision') }}
+                                </x-button>
+                            </form>
+                            @endif
+                        @endforeach
                     @elseif(Auth::user()->permission == 4)
                         <?php
                             $reviewer_finished = DB::table('reviewer_formulars')->where([
                                 ['paper_id', '=', $paper_global_id],
                                 ['reviewer_id', '=', Auth::user()->id],
-                                ])->pluck("status")->first();
+                                ])->get();
                         ?>
-                        @if($reviewer_finished != 1)
-                        <form class="mt-2 inline" method="POST" action="/review">
-                            @csrf
-                            <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
-                            <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
-                            <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" autofocus />
-                            <x-button>
-                                {{ __('Review') }}
-                            </x-button>
-                        </form>
-                        @endif
+                        @foreach($reviewer_finished as $rev_finished)
+                            @if($rev_finished->reviewer_acceptance == 1)
+                                @if($rev_finished->status != 1)
+                                <form class="mt-2 inline" method="POST" action="/review">
+                                    @csrf
+                                    <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
+                                    <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
+                                    <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" autofocus />
+                                    <x-button>
+                                        {{ __('Review') }}
+                                    </x-button>
+                                </form>
+                                @endif
+                            @else
+                            <form class="mt-2 inline" method="POST" action="/accept_review">
+                                @csrf
+                                <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
+                                <x-input id="review_formular_id" class="block mt-1 w-full" type="hidden" name="review_formular_id" value="{{$rev_finished->id}}" autofocus />
+                                <x-button>
+                                    {{ __('Accept') }}
+                                </x-button>
+                            </form>
+                            @endif
+                        @endforeach
                     @endif
                 </div>
     </div>
