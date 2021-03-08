@@ -321,13 +321,24 @@
                             </x-button>
                         </form>
                         @if($paper_status_global == 1 OR $paper_status_global == 4 OR $paper_status_global == 5)
-                            <form class="mt-4 inline" method="POST" action="/assign_editor">
+                            <form class="mt-4 mr-4 inline" method="POST" action="/assign_editor">
                                 @csrf
                                 <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
                                 <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
                                 <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" autofocus />
                                 <x-button>
                                     {{ __('Assign to Editor') }}
+                                </x-button>
+                            </form>
+                        @endif
+                        @if($paper_status_global == 1 AND $paper_global_file == 1)
+                            <form class="mt-4 inline" method="POST" action="/return_paper">
+                                @csrf
+                                <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_global_id}}" autofocus />
+                                <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_global_number}}" autofocus />
+                                <x-input id="conference" class="block mt-1 w-full" type="hidden" name="conference" value="{{$conference}}" autofocus />
+                                <x-button>
+                                    {{ __('Return paper for change') }}
                                 </x-button>
                             </form>
                         @endif

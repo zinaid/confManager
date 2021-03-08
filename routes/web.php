@@ -77,6 +77,11 @@ Route::post('/editor_decision_submit', [PaperController::class, 'editor_decision
 
 Route::get('/reviewer_response/{id}', [PaperController::class, 'reviewer_response']);
 
+Route::post('/return_paper', [PaperController::class, 'return_paper']);
+
+Route::post('/return_paper_submit', [PaperController::class, 'return_paper_submit']);
+
+
 
 # SETTINGS ROUTES
 Route::get('settings', [ConferenceController::class, 'index'])->middleware('auth')->name('settings');
