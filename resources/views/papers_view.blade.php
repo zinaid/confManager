@@ -120,7 +120,7 @@
                         @foreach ($logs_info as $log_info)
                         @if($log_info->status != 1)
                             @if($log_info->status == 1) <?php $status_text = "Submited";$color = "bg-green-400";?>
-                            @elseif($log_info->status == 2)<?php $status_text = "At Editor";$color = "bg-green-400";?>
+                            @elseif($log_info->status == 2)<?php $status_text = "With Editor";$color = "bg-green-400";?>
                             @elseif($log_info->status == 3) <?php $status_text = "Under Review";$color = "bg-blue-400";?>
                             @elseif($log_info->status == 4) <?php $status_text  = "Minor Revision";$color = "bg-red-400";?>
                             @elseif($log_info->status == 5) <?php $status_text = "Major Revision";$color = "bg-red-400";?>
@@ -172,6 +172,7 @@
                     ?>
                     <p class="mt-4 font-semibold">Reviewer:</p> 
                     @foreach ($reviewers as $reviewer)
+                        
                         <p class="mt-2">{{ $loop->iteration }}. {{User::find($reviewer->reviewer_id)->name}} {{User::find($reviewer->reviewer_id)->lastname}} 
                         @if($reviewer->reviewer_acceptance == 1)
                         <a href="/reviewer_response/{{$reviewer->id}}"><span class="px-1 py-1 bg-green-400 border border-transparent rounded-md font-semibold text-white text-xs">Accepted ({{$reviewer->date_of_acceptance}})</span></a>
@@ -200,7 +201,7 @@
                     @foreach ($reviewers as $reviewer)
                         <p class="mt-2">{{ $loop->iteration }}. {{User::find($reviewer->reviewer_id)->name}} {{User::find($reviewer->reviewer_id)->lastname}} 
                         @if($reviewer->reviewer_acceptance == 1)
-                        <span class="px-1 py-1 bg-green-400 border border-transparent rounded-md font-semibold text-white text-xs">Accepted ({{$reviewer->date_of_acceptance}})</span>
+                        <a href="/reviewer_response/{{$reviewer->id}}"><span class="px-1 py-1 bg-green-400 border border-transparent rounded-md font-semibold text-white text-xs">Accepted ({{$reviewer->date_of_acceptance}})</span></a>
                         @elseif($reviewer->reviewer_acceptance == 2)
                         <span class="px-1 py-1 bg-red-400 border border-transparent rounded-md font-semibold text-white text-xs">Decline ({{$reviewer->date_of_acceptance}})</span>
                         @else
@@ -218,21 +219,31 @@
                 <h2 class="mt-4 font-bold text-xl text-gray-800 leading-tight">
                         {{ __('Paper logs') }}
                     </h2>
-                    @foreach($paper_files as $paper_file)
-                    <div class="w-full py-6">
-                    <div class="flex">
-                        <div class="w-1/1">
-                        </div>
-                        <form class="mt-2" method="POST" action="/download_pdf">
-                            @csrf
-                            <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_file->paper_id}}" autofocus />
-                            <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_file->paper_number}}" autofocus />
-                            <x-input id="paper_file" class="block mt-1 w-full" type="hidden" name="paper_file" value="{{$paper_file->file}}" autofocus />
-                            <x-button>
-                                <p>{{ $paper_file->file }}</p> - <p>{{ date('d.m.Y', strtotime($paper_file->date))}}</p>
-                            </x-button>
-                        </form> 
-                    </div>
+                    <?php
+                            $reviewer_finished = DB::table('reviewer_formulars')->where([
+                                ['paper_id', '=', $paper_global_id],
+                                ['reviewer_id', '=', Auth::user()->id],
+                                ])->get();
+                        ?>
+                        @foreach($reviewer_finished as $rev_finished)
+                            @if($rev_finished->reviewer_acceptance == 1)
+                                @foreach($paper_files as $paper_file)
+                                <div class="w-full py-6">
+                                <div class="flex">
+                                    <div class="w-1/1">
+                                    </div>
+                                    <form class="mt-2" method="POST" action="/download_pdf">
+                                        @csrf
+                                        <x-input id="paper_id" class="block mt-1 w-full" type="hidden" name="paper_id" value="{{$paper_file->paper_id}}" autofocus />
+                                        <x-input id="paper_number" class="block mt-1 w-full" type="hidden" name="paper_number" value="{{$paper_file->paper_number}}" autofocus />
+                                        <x-input id="paper_file" class="block mt-1 w-full" type="hidden" name="paper_file" value="{{$paper_file->file}}" autofocus />
+                                        <x-button>
+                                            <p>{{ $paper_file->file }}</p> - <p>{{ date('d.m.Y', strtotime($paper_file->date))}}</p>
+                                        </x-button>
+                                    </form> 
+                                </div>
+                                @endforeach
+                            @endif
                     @endforeach
                     <div class="mt-4" align="right">
                     @if (Auth::user()->permission == 0) 

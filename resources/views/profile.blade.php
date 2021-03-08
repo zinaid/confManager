@@ -34,8 +34,8 @@
                         <select id="title" class="block border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 w-full mt-1 bg-white rounded outline-none" name="title"  required autofocus>
                             <option <?php if($user->title=="Prof.dr.") echo "selected";?> class="py-1">Prof.dr.</option>
                             <option <?php if($user->title=="Dr.") echo "selected";?> class="py-1">Dr.</option>
-                            <option <?php if($user->title=="Msc.") echo "selected";?> class="py-1">Msc.</option>
-                            <option <?php if($user->title=="Bsc.") echo "selected";?> class="py-1">Bsc.</option>
+                            <option <?php if($user->title=="MSc.") echo "selected";?> class="py-1">MSc.</option>
+                            <option <?php if($user->title=="BSc.") echo "selected";?> class="py-1">BSc.</option>
                            
                         </select>
                     </div>

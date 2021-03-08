@@ -31,8 +31,8 @@
                 <select id="title" class="block border-gray-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 w-full mt-1 bg-white rounded outline-none" name="title"  required autofocus>
                     <option class="py-1">Prof.dr.</option>
                     <option class="py-1">Dr.</option>
-                    <option class="py-1">Msc.</option>
-                    <option class="py-1">Bsc.</option>
+                    <option class="py-1">MSc.</option>
+                    <option class="py-1">BSc.</option>
                 </select>
             </div>
             <!-- Title -->
