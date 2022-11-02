@@ -7,56 +7,22 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## About App
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This is the source code for the v1 of the Submit System conference manager. This system was build for the need of the IOP indexed conference RIM2021, but is developed to be fully customized to any other conference and is currently used by the RIM 2021 (IOP indexed scientific conference) organized by the Faculty of Technical Engineering Bihać and by the 5th of June 2022 - conference organized by the Faculty of Biotechnical Engineering at University of Bihać in cooperation with Technical Faculty
+Bihać, University of Nova Gorica-Laboratory for Environmental and Life Science, University Metropolitan Beograd - Faculty of Applied Ecology – Futura and Ministry of Construction, Urban Development and Environmental Protection of Una-Sana Canton.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Some of the functionalities of the system are: 
+   * Author registration and profile confirmation (through unique emails)
+   * Conference administrator (secretary) has a possibility to add conference informations (due dates, logo, acronym, and etc), add conference administration (editors, reviewers, secretary), add mail templates (for any action in the proccess).
+   * Authors can submit abstract, or full paper with all corresponding informations.
+   * Authors track all paper statuses through notifications
+   * Editors assign papers to reviewers and reviewers review paper through online form
+   * Editors and secretary can review statistics, finances, paper informations through system
+   * All needed correspondance between many actors in the Submit System is automatized and digitalized
+   * Many more functionalities
+   
+   Brief overview of user registration and paper submission can be viewed on: https://www.youtube.com/playlist?list=PLRzlcDZTqF2p2vrljr9NKtwndXj5p7LI1
+   
+   Author: Zinaid Kapić
+   
